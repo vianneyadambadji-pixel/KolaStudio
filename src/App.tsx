@@ -87,11 +87,22 @@ const NEWS = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [settings, setSettings] = useState<any>({});
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    const unsubSettings = onSnapshot(doc(db, 'settings', 'main'), (docSnap) => {
+      if (docSnap.exists()) {
+        setSettings(docSnap.data());
+      }
+    });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      unsubSettings();
+    };
   }, []);
 
   const links = [
@@ -106,7 +117,7 @@ const Navbar = () => {
     <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-kola-bg/95 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'}`}>
       <div className="container mx-auto px-6 flex items-center justify-between">
         <a href="#" className="flex items-center group">
-          <img src="/LOGO1.png" alt="KOLA Studio" className="h-16 md:h-20 w-auto object-contain transition-all duration-300" referrerPolicy="no-referrer" />
+          <img src={settings?.logo1 || "/LOGO1.png"} alt="KOLA Studio" className="h-16 md:h-20 w-auto object-contain transition-all duration-300" referrerPolicy="no-referrer" />
         </a>
 
         {/* Desktop Nav */}
@@ -167,11 +178,22 @@ const Navbar = () => {
 }
 
 const Hero = () => {
+  const [settings, setSettings] = useState<any>({});
+
+  useEffect(() => {
+    const unsubSettings = onSnapshot(doc(db, 'settings', 'main'), (docSnap) => {
+      if (docSnap.exists()) {
+        setSettings(docSnap.data());
+      }
+    });
+    return () => unsubSettings();
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
       {/* Background Image with overlay */}
       <div className="absolute inset-0 z-0">
-        <img src="https://picsum.photos/seed/childrencare/1920/1080?blur=2" alt="Enfants" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+        <img src={settings?.heroBg || "https://picsum.photos/seed/childrencare/1920/1080?blur=2"} alt="Enfants" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
         <div className="absolute inset-0 bg-kola-dark/70 mix-blend-multiply"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-kola-dark/40 via-transparent to-kola-bg"></div>
       </div>
@@ -212,6 +234,23 @@ const Hero = () => {
 }
 
 const About = () => {
+  const [settings, setSettings] = useState<any>({});
+
+  useEffect(() => {
+    const unsubSettings = onSnapshot(doc(db, 'settings', 'main'), (docSnap) => {
+      if (docSnap.exists()) {
+        setSettings(docSnap.data());
+      }
+    });
+    return () => unsubSettings();
+  }, []);
+
+  const teamWithImages = [
+    { ...TEAM[0], image: settings?.teamRayane || TEAM[0].image },
+    { ...TEAM[1], image: settings?.teamVianney || TEAM[1].image },
+    { ...TEAM[2], image: settings?.teamElicia || TEAM[2].image }
+  ];
+
   return (
     <section id="agence" className="py-24 bg-kola-bg relative">
       <div className="container mx-auto px-6">
@@ -246,7 +285,7 @@ const About = () => {
             className="bg-kola-dark rounded-xl p-8 md:p-10 shadow-2xl"
           >
             <div className="flex flex-col gap-8">
-              {TEAM.map((member, idx) => (
+              {teamWithImages.map((member, idx) => (
                 <div key={idx} className="flex flex-col sm:flex-row gap-6 items-start">
                   <div className="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-md overflow-hidden">
                     <img src={member.image} alt={member.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
@@ -267,6 +306,17 @@ const About = () => {
 }
 
 const Project = () => {
+  const [settings, setSettings] = useState<any>({});
+
+  useEffect(() => {
+    const unsubSettings = onSnapshot(doc(db, 'settings', 'main'), (docSnap) => {
+      if (docSnap.exists()) {
+        setSettings(docSnap.data());
+      }
+    });
+    return () => unsubSettings();
+  }, []);
+
   return (
     <section id="projet" className="py-24 bg-kola-light/30 border-y border-kola-light">
       <div className="container mx-auto px-6">
@@ -311,7 +361,7 @@ const Project = () => {
             className="relative"
           >
             <div className="aspect-square rounded-none overflow-hidden border-8 border-white shadow-2xl grayscale hover:grayscale-0 transition-all duration-700">
-              <img src="/ENFANT.jpg" alt="Concept Cabine VI WE" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              <img src={settings?.projectConcept || "/ENFANT.jpg"} alt="Concept Cabine VI WE" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </div>
             <div className="absolute -bottom-8 -left-8 bg-kola-dark p-6 shadow-xl max-w-xs border-l-4 border-kola-accent">
               <div className="flex items-center gap-4 mb-2">
@@ -333,13 +383,13 @@ const Project = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="overflow-hidden shadow-lg border-4 border-white">
-              <img src="/Gemini_Generated_Image_is1842is1842is18.png" alt="Vue Projet VI WE 1" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
+              <img src={settings?.projectVue1 || "/Gemini_Generated_Image_is1842is1842is18.png"} alt="Vue Projet VI WE 1" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
             </div>
             <div className="overflow-hidden shadow-lg border-4 border-white">
-              <img src="/Gemini_Generated_Image_v4vxyxv4vxyxv4vx.png" alt="Vue Projet VI WE 2" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
+              <img src={settings?.projectVue2 || "/Gemini_Generated_Image_v4vxyxv4vxyxv4vx.png"} alt="Vue Projet VI WE 2" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
             </div>
             <div className="overflow-hidden shadow-lg border-4 border-white">
-              <img src="/Gemini_Generated_Image_h3rylth3rylth3ry.png" alt="Vue Projet VI WE 3" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
+              <img src={settings?.projectVue3 || "/Gemini_Generated_Image_h3rylth3rylth3ry.png"} alt="Vue Projet VI WE 3" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
             </div>
           </div>
         </div>
@@ -698,7 +748,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-2">
             <div className="flex items-start mb-6">
-              <img src="/LOGO2.png" alt="KOLA Studio" className="h-20 md:h-24 w-auto object-contain" referrerPolicy="no-referrer" />
+              <img src={settings?.logo2 || "/LOGO2.png"} alt="KOLA Studio" className="h-20 md:h-24 w-auto object-contain" referrerPolicy="no-referrer" />
             </div>
             <p className="text-gray-400 max-w-md mb-8">
               Agence de design d'espace dédiée à la création d'environnements qui soignent, soutiennent et inspirent. Porteurs du projet VI WE.

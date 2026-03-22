@@ -68,7 +68,7 @@ service cloud.firestore {
     }
     
     function isAdmin() {
-      return isAuthenticated() && request.auth.token.email == "vianneyadambadji@gmail.com" && request.auth.token.email_verified == true;
+      return isAuthenticated() && request.auth.token.email == "tournoidefootf@gmail.com" && request.auth.token.email_verified == true;
     }
     
     function hasRequiredFields(fields) {
@@ -150,9 +150,19 @@ service cloud.firestore {
     }
 
     function isValidSettings() {
-      return hasOnlyAllowedFields(['email', 'phone', 'updatedAt']) &&
-             isValidEmail(request.resource.data.email) &&
-             validStringLength('phone', 1, 50) &&
+      return hasOnlyAllowedFields(['email', 'phone', 'updatedAt', 'heroBg', 'projectConcept', 'projectVue1', 'projectVue2', 'projectVue3', 'logo1', 'logo2', 'teamRayane', 'teamVianney', 'teamElicia']) &&
+             (!('email' in request.resource.data) || isValidEmail(request.resource.data.email)) &&
+             (!('phone' in request.resource.data) || validStringLength('phone', 1, 50)) &&
+             (!('heroBg' in request.resource.data) || isValidUrl(request.resource.data.heroBg)) &&
+             (!('projectConcept' in request.resource.data) || isValidUrl(request.resource.data.projectConcept)) &&
+             (!('projectVue1' in request.resource.data) || isValidUrl(request.resource.data.projectVue1)) &&
+             (!('projectVue2' in request.resource.data) || isValidUrl(request.resource.data.projectVue2)) &&
+             (!('projectVue3' in request.resource.data) || isValidUrl(request.resource.data.projectVue3)) &&
+             (!('logo1' in request.resource.data) || isValidUrl(request.resource.data.logo1)) &&
+             (!('logo2' in request.resource.data) || isValidUrl(request.resource.data.logo2)) &&
+             (!('teamRayane' in request.resource.data) || isValidUrl(request.resource.data.teamRayane)) &&
+             (!('teamVianney' in request.resource.data) || isValidUrl(request.resource.data.teamVianney)) &&
+             (!('teamElicia' in request.resource.data) || isValidUrl(request.resource.data.teamElicia)) &&
              request.resource.data.updatedAt is timestamp;
     }
 

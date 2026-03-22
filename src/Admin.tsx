@@ -38,7 +38,7 @@ const Admin = () => {
   }, []);
 
   useEffect(() => {
-    if (!user || user.email !== 'vianneyadambadji@gmail.com') return;
+    if (!user || user.email !== 'tournoidefootf@gmail.com') return;
 
     const qEvents = query(collection(db, 'events'), orderBy('createdAt', 'desc'));
     const unsubEvents = onSnapshot(qEvents, (snapshot) => {
@@ -94,7 +94,7 @@ const Admin = () => {
     );
   }
 
-  if (user.email !== 'vianneyadambadji@gmail.com') {
+  if (user.email !== 'tournoidefootf@gmail.com') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-kola-bg p-6">
         <h1 className="text-2xl font-display font-bold text-red-600 mb-4">Accès refusé</h1>
@@ -223,6 +223,9 @@ const Admin = () => {
           </button>
           <button onClick={() => setActiveTab('donations')} className={`flex items-center gap-3 w-full text-left p-3 transition-colors ${activeTab === 'donations' ? 'bg-kola-accent text-kola-dark' : 'hover:bg-white/10'}`}>
             <Heart size={20} /> Liste des Dons
+          </button>
+          <button onClick={() => setActiveTab('site_images')} className={`flex items-center gap-3 w-full text-left p-3 transition-colors ${activeTab === 'site_images' ? 'bg-kola-accent text-kola-dark' : 'hover:bg-white/10'}`}>
+            <ImageIcon size={20} /> Images du Site
           </button>
           <button onClick={() => setActiveTab('settings')} className={`flex items-center gap-3 w-full text-left p-3 transition-colors ${activeTab === 'settings' ? 'bg-kola-accent text-kola-dark' : 'hover:bg-white/10'}`}>
             <Settings size={20} /> Paramètres
@@ -388,6 +391,70 @@ const Admin = () => {
                     )}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'site_images' && (
+          <div>
+            <h3 className="text-3xl font-display font-bold mb-8">Images du Site</h3>
+            <div className="bg-white p-6 shadow-sm mb-10">
+              <p className="text-gray-600 mb-6">Modifiez ici les images principales affichées sur le site (Accueil, Projet, Logos).</p>
+              
+              <div className="grid gap-6">
+                {[
+                  { key: 'heroBg', label: "Image d'accueil (Bannière principale)" },
+                  { key: 'projectConcept', label: "Image Concept (Section Projet VI WE)" },
+                  { key: 'projectVue1', label: "Vue Projet 1" },
+                  { key: 'projectVue2', label: "Vue Projet 2" },
+                  { key: 'projectVue3', label: "Vue Projet 3" },
+                  { key: 'logo1', label: "Logo Principal (Menu)" },
+                  { key: 'logo2', label: "Logo Secondaire (Pied de page)" },
+                  { key: 'teamRayane', label: "Photo Équipe : Rayane" },
+                  { key: 'teamVianney', label: "Photo Équipe : Vianney" },
+                  { key: 'teamElicia', label: "Photo Équipe : Elicia" },
+                ].map(item => (
+                  <div key={item.key} className="border p-4 rounded flex flex-col md:flex-row gap-6 items-start md:items-center">
+                    <div className="w-40 h-24 bg-gray-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                      {(settings as any)[item.key] ? (
+                        <img src={(settings as any)[item.key]} alt={item.label} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-gray-400 text-sm">Aucune image</span>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-bold mb-2">{item.label}</h4>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          setIsUploading(true);
+                          try {
+                            const fileRef = ref(storage, `site_images/${item.key}_${Date.now()}_${file.name}`);
+                            await uploadBytes(fileRef, file);
+                            const url = await getDownloadURL(fileRef);
+                            await setDoc(doc(db, 'settings', 'main'), {
+                              ...settings,
+                              [item.key]: url,
+                              updatedAt: serverTimestamp()
+                            });
+                            alert('Image mise à jour avec succès !');
+                          } catch (err) {
+                            console.error(err);
+                            alert('Erreur lors de la mise à jour de l\'image');
+                          } finally {
+                            setIsUploading(false);
+                          }
+                        }}
+                        disabled={isUploading}
+                        className="text-sm"
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
