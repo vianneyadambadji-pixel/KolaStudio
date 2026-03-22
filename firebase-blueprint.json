@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "Event": {
+      "title": "Event",
+      "description": "An event related to the project.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Title of the event." },
+        "date": { "type": "string", "description": "Date of the event." },
+        "location": { "type": "string", "description": "Location of the event." },
+        "desc": { "type": "string", "description": "Description of the event." },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp." }
+      },
+      "required": ["title", "date", "location", "desc", "createdAt"]
+    },
+    "News": {
+      "title": "News",
+      "description": "A news article or update.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Title of the news." },
+        "category": { "type": "string", "description": "Category of the news." },
+        "image": { "type": "string", "description": "Image URL for the news." },
+        "excerpt": { "type": "string", "description": "Short excerpt of the news." },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp." }
+      },
+      "required": ["title", "category", "image", "excerpt", "createdAt"]
+    },
+    "Supporter": {
+      "title": "Supporter",
+      "description": "A partner or supporter of the project.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the supporter." },
+        "logo": { "type": "string", "description": "Logo URL of the supporter." },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp." }
+      },
+      "required": ["name", "logo", "createdAt"]
+    },
+    "Media": {
+      "title": "Media",
+      "description": "Photos or PDF related to the project.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Title of the media." },
+        "type": { "type": "string", "enum": ["photo", "pdf"], "description": "Type of media." },
+        "url": { "type": "string", "description": "URL of the media." },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp." }
+      },
+      "required": ["title", "type", "url", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/events/{eventId}": {
+      "schema": { "$ref": "#/entities/Event" },
+      "description": "Collection of events."
+    },
+    "/news/{newsId}": {
+      "schema": { "$ref": "#/entities/News" },
+      "description": "Collection of news."
+    },
+    "/supporters/{supporterId}": {
+      "schema": { "$ref": "#/entities/Supporter" },
+      "description": "Collection of supporters."
+    },
+    "/media/{mediaId}": {
+      "schema": { "$ref": "#/entities/Media" },
+      "description": "Collection of media."
+    }
+  }
+}
