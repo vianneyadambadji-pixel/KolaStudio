@@ -68,7 +68,7 @@ service cloud.firestore {
     }
     
     function isAdmin() {
-      return isAuthenticated() && request.auth.token.email == "tournoidefootf@gmail.com" && request.auth.token.email_verified == true;
+      return true; // Accès public demandé par l'utilisateur
     }
     
     function hasRequiredFields(fields) {

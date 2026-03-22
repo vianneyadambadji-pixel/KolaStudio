@@ -7,8 +7,6 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Trash2, Plus, LogOut, FileText, Image as ImageIcon, Calendar, Newspaper, Users, Heart, Home, Settings } from 'lucide-react';
 
 const Admin = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('events');
 
   // Data states
@@ -30,16 +28,6 @@ const Admin = () => {
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!user || user.email !== 'tournoidefootf@gmail.com') return;
-
     const qEvents = query(collection(db, 'events'), orderBy('createdAt', 'desc'));
     const unsubEvents = onSnapshot(qEvents, (snapshot) => {
       setEvents(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
@@ -79,32 +67,7 @@ const Admin = () => {
       unsubDonations();
       unsubSettings();
     };
-  }, [user]);
-
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-kola-bg">Chargement...</div>;
-
-  if (!user) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-kola-bg p-6">
-        <h1 className="text-4xl font-display font-bold text-kola-dark mb-8">Administration KOLA</h1>
-        <button onClick={loginWithGoogle} className="bg-kola-accent text-white px-8 py-4 font-display tracking-wider flex items-center gap-2">
-          Se connecter avec Google
-        </button>
-      </div>
-    );
-  }
-
-  if (user.email !== 'tournoidefootf@gmail.com') {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-kola-bg p-6">
-        <h1 className="text-2xl font-display font-bold text-red-600 mb-4">Accès refusé</h1>
-        <p className="mb-8">Vous n'avez pas les droits d'administration.</p>
-        <button onClick={logout} className="bg-kola-dark text-white px-6 py-3 font-display tracking-wider">
-          Se déconnecter
-        </button>
-      </div>
-    );
-  }
+  }, []);
 
   const handleAddEvent = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -236,9 +199,6 @@ const Admin = () => {
           <Link to="/" className="flex items-center gap-3 text-gray-400 hover:text-white p-3 w-full transition-colors">
             <Home size={20} /> Retour au site
           </Link>
-          <button onClick={logout} className="flex items-center gap-3 text-gray-400 hover:text-white p-3 w-full transition-colors">
-            <LogOut size={20} /> Déconnexion
-          </button>
         </div>
       </div>
 
