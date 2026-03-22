@@ -68,7 +68,7 @@ service cloud.firestore {
     }
     
     function isAdmin() {
-      return isAuthenticated() && request.auth.token.email == "tournoidefootf@gmail.com" && request.auth.token.email_verified == true;
+      return isAuthenticated() && request.auth.token.email == "vianneyadambadji@gmail.com" && request.auth.token.email_verified == true;
     }
     
     function hasRequiredFields(fields) {

@@ -38,7 +38,7 @@ const Admin = () => {
   }, []);
 
   useEffect(() => {
-    if (!user || user.email !== 'tournoidefootf@gmail.com') return;
+    if (!user || user.email !== 'vianneyadambadji@gmail.com') return;
 
     const qEvents = query(collection(db, 'events'), orderBy('createdAt', 'desc'));
     const unsubEvents = onSnapshot(qEvents, (snapshot) => {
