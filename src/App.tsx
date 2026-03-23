@@ -26,19 +26,19 @@ const TEAM = [
     name: "RAYANE PIO",
     role: "Directrice de la Conception Spatiale",
     desc: "(Responsable de la conception et des opérations soit : de la conception et de la réalisation des travaux)",
-    image: "/RAYANE.png"
+    image: https://ttdmze64jpt0mzfc.private.blob.vercel-storage.com/RAYANE.png
   },
   {
     name: "TAGNON ADAMBADJI",
     role: "Designer / Responsable de Projet & Stratégie (Business Lead)",
     desc: "(Assistant de conception et Responsable de la viabilité économique et de la relation avec les investisseurs.)",
-    image: "/VIANNEY.png"
+    image: https://ttdmze64jpt0mzfc.private.blob.vercel-storage.com/VIANNEY.png
   },
   {
     name: "ELICIA MISSIHOUN",
     role: "Designer d'espace spécialisé en design d'expérience & sensoriel",
     desc: "Responsable de l'ambiance et du ressenti émotionnel à l'intérieur de l'espace (expérience utilisateur).",
-    image: "/ELICIA.png"
+    image: https://ttdmze64jpt0mzfc.private.blob.vercel-storage.com/ELICIA.png
   }
 ];
 
@@ -383,13 +383,13 @@ const Project = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="overflow-hidden shadow-lg border-4 border-white">
-              <img src={settings?.projectVue1 || "/Gemini_Generated_Image_is1842is1842is18.png"} alt="Vue Projet VI WE 1" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
+              <img src https://ttdmze64jpt0mzfc.private.blob.vercel-storage.com/Gemini_Generated_Image_is1842is1842is18.png={settings?.projectVue1 || "/Gemini_Generated_Image_is1842is1842is18.png"} alt="Vue Projet VI WE 1" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
             </div>
             <div className="overflow-hidden shadow-lg border-4 border-white">
-              <img src={settings?.projectVue2 || "/Gemini_Generated_Image_v4vxyxv4vxyxv4vx.png"} alt="Vue Projet VI WE 2" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
+              <img src https://ttdmze64jpt0mzfc.private.blob.vercel-storage.com/Enscape_2026-03-16-06-22-01.png={settings?.projectVue2 || "/Gemini_Generated_Image_v4vxyxv4vxyxv4vx.png"} alt="Vue Projet VI WE 2" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
             </div>
             <div className="overflow-hidden shadow-lg border-4 border-white">
-              <img src={settings?.projectVue3 || "/Gemini_Generated_Image_h3rylth3rylth3ry.png"} alt="Vue Projet VI WE 3" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
+              <img src https://ttdmze64jpt0mzfc.private.blob.vercel-storage.com/Gemini_Generated_Image_v4vxyxv4vxyxv4vx.png={settings?.projectVue3 || "/Gemini_Generated_Image_h3rylth3rylth3ry.png"} alt="Vue Projet VI WE 3" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
             </div>
           </div>
         </div>
