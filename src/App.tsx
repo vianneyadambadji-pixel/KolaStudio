@@ -17,45 +17,64 @@ import {
   Download,
   FileText
 } from 'lucide-react';
-import { collection, onSnapshot, query, orderBy, addDoc, serverTimestamp, doc } from 'firebase/firestore';
-import { db } from './firebase';
-import Admin from './Admin';
+
+const SETTINGS = {
+  email: 'contact@kolastudio.com',
+  phone: '+33 1 23 45 67 89',
+  logo1: '/LOGO1.png',
+  logo2: '/LOGO2.png',
+  heroBg: 'https://picsum.photos/seed/childrencare/1920/1080?blur=2',
+  projectConcept: '/ENFANT.jpg',
+  projectVue1: '/Gemini_Generated_Image_is1842is1842is18.png',
+  projectVue2: '/Gemini_Generated_Image_v4vxyxv4vxyxv4vx.png',
+  projectVue3: '/Gemini_Generated_Image_h3rylth3rylth3ry.png'
+};
 
 const TEAM = [
   {
     name: "RAYANE PIO",
     role: "Directrice de la Conception Spatiale",
     desc: "(Responsable de la conception et des opérations soit : de la conception et de la réalisation des travaux)",
-    image: https://ttdmze64jpt0mzfc.private.blob.vercel-storage.com/RAYANE.png
+    image: "/RAYANE.png"
   },
   {
     name: "TAGNON ADAMBADJI",
     role: "Designer / Responsable de Projet & Stratégie (Business Lead)",
     desc: "(Assistant de conception et Responsable de la viabilité économique et de la relation avec les investisseurs.)",
-    image: https://ttdmze64jpt0mzfc.private.blob.vercel-storage.com/VIANNEY.png
+    image: "/VIANNEY.png"
   },
   {
     name: "ELICIA MISSIHOUN",
     role: "Designer d'espace spécialisé en design d'expérience & sensoriel",
     desc: "Responsable de l'ambiance et du ressenti émotionnel à l'intérieur de l'espace (expérience utilisateur).",
-    image: https://ttdmze64jpt0mzfc.private.blob.vercel-storage.com/ELICIA.png
+    image: "/ELICIA.png"
   }
 ];
 
 const EVENTS = [
   {
+    id: 1,
+    date: "15 Avril 2026",
+    title: "Soirée de collecte",
+    location: "Africa Design School",
+    desc: "Rejoignez-nous pour une grande soirée de collecte de fonds afin de soutenir le déploiement du projet VI WE."
+  },
+  {
+    id: 2,
     date: "15 Mai 2026",
     title: "Atelier Créatif Solidaire",
     location: "Espace VI WE, Paris",
     desc: "Une journée d'expression artistique pour les enfants, encadrée par nos designers."
   },
   {
+    id: 3,
     date: "02 Juin 2026",
     title: "Conférence : L'espace comme outil de guérison",
     location: "En ligne & KOLA STUDIO",
     desc: "Discussion sur l'impact du design sensoriel sur le bien-être psychologique des enfants."
   },
   {
+    id: 4,
     date: "20 Juin 2026",
     title: "Grande Collecte Annuelle",
     location: "Parvis de l'Hôtel de Ville",
@@ -65,18 +84,21 @@ const EVENTS = [
 
 const NEWS = [
   {
+    id: 1,
     title: "Inauguration de la première cabine VI WE",
     category: "Actualité",
     image: "https://picsum.photos/seed/inauguration/600/400",
     excerpt: "Découvrez les images de notre toute première unité d'aide, un espace pensé pour rassurer et écouter."
   },
   {
+    id: 2,
     title: "Le design sensoriel au service de l'enfance",
     category: "Article",
     image: "https://picsum.photos/seed/sensory/600/400",
     excerpt: "Comment les choix de matériaux, de lumières et de couleurs influencent le sentiment de sécurité."
   },
   {
+    id: 3,
     title: "Nouveau partenariat avec l'UNICEF",
     category: "Partenariat",
     image: "https://picsum.photos/seed/partnership/600/400",
@@ -84,25 +106,17 @@ const NEWS = [
   }
 ];
 
+const MEDIA: any[] = [];
+const SUPPORTERS: any[] = [];
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [settings, setSettings] = useState<any>({});
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
-    
-    const unsubSettings = onSnapshot(doc(db, 'settings', 'main'), (docSnap) => {
-      if (docSnap.exists()) {
-        setSettings(docSnap.data());
-      }
-    });
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      unsubSettings();
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const links = [
@@ -117,7 +131,7 @@ const Navbar = () => {
     <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-kola-bg/95 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'}`}>
       <div className="container mx-auto px-6 flex items-center justify-between">
         <a href="#" className="flex items-center group">
-          <img src={settings?.logo1 || "/LOGO1.png"} alt="KOLA Studio" className="h-16 md:h-20 w-auto object-contain transition-all duration-300" referrerPolicy="no-referrer" />
+          <img src={SETTINGS.logo1} alt="KOLA Studio" className="h-16 md:h-20 w-auto object-contain transition-all duration-300" referrerPolicy="no-referrer" />
         </a>
 
         {/* Desktop Nav */}
@@ -178,22 +192,11 @@ const Navbar = () => {
 }
 
 const Hero = () => {
-  const [settings, setSettings] = useState<any>({});
-
-  useEffect(() => {
-    const unsubSettings = onSnapshot(doc(db, 'settings', 'main'), (docSnap) => {
-      if (docSnap.exists()) {
-        setSettings(docSnap.data());
-      }
-    });
-    return () => unsubSettings();
-  }, []);
-
   return (
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
       {/* Background Image with overlay */}
       <div className="absolute inset-0 z-0">
-        <img src={settings?.heroBg || "https://picsum.photos/seed/childrencare/1920/1080?blur=2"} alt="Enfants" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+        <img src={SETTINGS.heroBg} alt="Enfants" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
         <div className="absolute inset-0 bg-kola-dark/70 mix-blend-multiply"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-kola-dark/40 via-transparent to-kola-bg"></div>
       </div>
@@ -234,23 +237,6 @@ const Hero = () => {
 }
 
 const About = () => {
-  const [settings, setSettings] = useState<any>({});
-
-  useEffect(() => {
-    const unsubSettings = onSnapshot(doc(db, 'settings', 'main'), (docSnap) => {
-      if (docSnap.exists()) {
-        setSettings(docSnap.data());
-      }
-    });
-    return () => unsubSettings();
-  }, []);
-
-  const teamWithImages = [
-    { ...TEAM[0], image: settings?.teamRayane || TEAM[0].image },
-    { ...TEAM[1], image: settings?.teamVianney || TEAM[1].image },
-    { ...TEAM[2], image: settings?.teamElicia || TEAM[2].image }
-  ];
-
   return (
     <section id="agence" className="py-24 bg-kola-bg relative">
       <div className="container mx-auto px-6">
@@ -285,7 +271,7 @@ const About = () => {
             className="bg-kola-dark rounded-xl p-8 md:p-10 shadow-2xl"
           >
             <div className="flex flex-col gap-8">
-              {teamWithImages.map((member, idx) => (
+              {TEAM.map((member, idx) => (
                 <div key={idx} className="flex flex-col sm:flex-row gap-6 items-start">
                   <div className="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-md overflow-hidden">
                     <img src={member.image} alt={member.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
@@ -306,17 +292,6 @@ const About = () => {
 }
 
 const Project = () => {
-  const [settings, setSettings] = useState<any>({});
-
-  useEffect(() => {
-    const unsubSettings = onSnapshot(doc(db, 'settings', 'main'), (docSnap) => {
-      if (docSnap.exists()) {
-        setSettings(docSnap.data());
-      }
-    });
-    return () => unsubSettings();
-  }, []);
-
   return (
     <section id="projet" className="py-24 bg-kola-light/30 border-y border-kola-light">
       <div className="container mx-auto px-6">
@@ -361,7 +336,7 @@ const Project = () => {
             className="relative"
           >
             <div className="aspect-square rounded-none overflow-hidden border-8 border-white shadow-2xl grayscale hover:grayscale-0 transition-all duration-700">
-              <img src={settings?.projectConcept || "/ENFANT.jpg"} alt="Concept Cabine VI WE" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              <img src={SETTINGS.projectConcept} alt="Concept Cabine VI WE" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </div>
             <div className="absolute -bottom-8 -left-8 bg-kola-dark p-6 shadow-xl max-w-xs border-l-4 border-kola-accent">
               <div className="flex items-center gap-4 mb-2">
@@ -383,13 +358,13 @@ const Project = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="overflow-hidden shadow-lg border-4 border-white">
-              <img src https://ttdmze64jpt0mzfc.private.blob.vercel-storage.com/Gemini_Generated_Image_is1842is1842is18.png={settings?.projectVue1 || "/Gemini_Generated_Image_is1842is1842is18.png"} alt="Vue Projet VI WE 1" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
+              <img src={SETTINGS.projectVue1} alt="Vue Projet VI WE 1" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
             </div>
             <div className="overflow-hidden shadow-lg border-4 border-white">
-              <img src https://ttdmze64jpt0mzfc.private.blob.vercel-storage.com/Enscape_2026-03-16-06-22-01.png={settings?.projectVue2 || "/Gemini_Generated_Image_v4vxyxv4vxyxv4vx.png"} alt="Vue Projet VI WE 2" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
+              <img src={SETTINGS.projectVue2} alt="Vue Projet VI WE 2" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
             </div>
             <div className="overflow-hidden shadow-lg border-4 border-white">
-              <img src https://ttdmze64jpt0mzfc.private.blob.vercel-storage.com/Gemini_Generated_Image_v4vxyxv4vxyxv4vx.png={settings?.projectVue3 || "/Gemini_Generated_Image_h3rylth3rylth3ry.png"} alt="Vue Projet VI WE 3" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
+              <img src={SETTINGS.projectVue3} alt="Vue Projet VI WE 3" className="w-full h-80 object-cover hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
             </div>
           </div>
         </div>
@@ -399,20 +374,10 @@ const Project = () => {
 }
 
 const MediaGallery = () => {
-  const [media, setMedia] = useState<any[]>([]);
+  if (MEDIA.length === 0) return null;
 
-  useEffect(() => {
-    const qMedia = query(collection(db, 'media'), orderBy('createdAt', 'desc'));
-    const unsub = onSnapshot(qMedia, (snapshot) => {
-      setMedia(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
-    return () => unsub();
-  }, []);
-
-  if (media.length === 0) return null;
-
-  const photos = media.filter(m => m.type === 'photo');
-  const pdfs = media.filter(m => m.type === 'pdf');
+  const photos = MEDIA.filter(m => m.type === 'photo');
+  const pdfs = MEDIA.filter(m => m.type === 'pdf');
 
   return (
     <section id="medias" className="py-24 bg-white border-y border-kola-light">
@@ -462,26 +427,6 @@ const MediaGallery = () => {
 }
 
 const EventsNews = () => {
-  const [events, setEvents] = useState<any[]>([]);
-  const [news, setNews] = useState<any[]>([]);
-
-  useEffect(() => {
-    const qEvents = query(collection(db, 'events'), orderBy('createdAt', 'desc'));
-    const unsubEvents = onSnapshot(qEvents, (snapshot) => {
-      setEvents(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
-
-    const qNews = query(collection(db, 'news'), orderBy('createdAt', 'desc'));
-    const unsubNews = onSnapshot(qNews, (snapshot) => {
-      setNews(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
-
-    return () => {
-      unsubEvents();
-      unsubNews();
-    };
-  }, []);
-
   return (
     <section className="py-24 bg-kola-bg">
       <div className="container mx-auto px-6">
@@ -494,9 +439,9 @@ const EventsNews = () => {
               <div className="h-1 bg-kola-dark flex-1 max-w-[100px] mt-2"></div>
             </div>
             <div className="space-y-6">
-              {events.length === 0 ? (
+              {EVENTS.length === 0 ? (
                 <p className="text-gray-500 italic">Aucun événement à venir.</p>
-              ) : events.map((ev, i) => (
+              ) : EVENTS.map((ev, i) => (
                 <motion.div 
                   key={ev.id}
                   initial={{ opacity: 0, y: 10 }}
@@ -528,9 +473,9 @@ const EventsNews = () => {
               <div className="h-1 bg-kola-dark flex-1 max-w-[100px] mt-2"></div>
             </div>
             <div className="space-y-8">
-              {news.length === 0 ? (
+              {NEWS.length === 0 ? (
                 <p className="text-gray-500 italic">Aucune actualité pour le moment.</p>
-              ) : news.map((item, i) => (
+              ) : NEWS.map((item, i) => (
                 <motion.div 
                   key={item.id}
                   initial={{ opacity: 0, y: 10 }}
@@ -575,17 +520,8 @@ const Support = () => {
 
     setIsSubmitting(true);
     try {
-      // Placeholder pour l'intégration future de Feexpay
-      // const feexpayResponse = await initFeexpayPayment({ amount, email, ... });
-      
-      await addDoc(collection(db, 'donations'), {
-        amount: Number(amount),
-        firstName,
-        lastName,
-        email,
-        status: 'completed', // Simulation d'un paiement réussi
-        createdAt: serverTimestamp()
-      });
+      // Simulation d'un paiement réussi sans base de données
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       setSuccess(true);
       setAmount("");
@@ -699,17 +635,7 @@ const Support = () => {
 }
 
 const Supporters = () => {
-  const [supporters, setSupporters] = useState<any[]>([]);
-
-  useEffect(() => {
-    const qSupporters = query(collection(db, 'supporters'), orderBy('createdAt', 'desc'));
-    const unsub = onSnapshot(qSupporters, (snapshot) => {
-      setSupporters(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
-    return () => unsub();
-  }, []);
-
-  if (supporters.length === 0) return null;
+  if (SUPPORTERS.length === 0) return null;
 
   return (
     <section className="py-16 bg-white border-t border-kola-light">
@@ -719,7 +645,7 @@ const Supporters = () => {
           <div className="h-1 w-16 bg-kola-accent mx-auto mt-4"></div>
         </div>
         <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-          {supporters.map((supporter) => (
+          {SUPPORTERS.map((supporter) => (
             <div key={supporter.id} className="w-32 md:w-40 hover:scale-105 transition-transform cursor-pointer">
               <img src={supporter.logo} alt={supporter.name} className="w-full h-auto object-contain" referrerPolicy="no-referrer" />
             </div>
@@ -731,24 +657,13 @@ const Supporters = () => {
 }
 
 const Footer = () => {
-  const [settings, setSettings] = useState({ email: 'contact@kolastudio.com', phone: '+33 1 23 45 67 89' });
-
-  useEffect(() => {
-    const unsubSettings = onSnapshot(doc(db, 'settings', 'main'), (docSnap) => {
-      if (docSnap.exists()) {
-        setSettings(docSnap.data() as any);
-      }
-    });
-    return () => unsubSettings();
-  }, []);
-
   return (
     <footer className="bg-[#111111] text-white pt-20 pb-10">
       <div className="container mx-auto px-6">
         <div className="grid md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-2">
             <div className="flex items-start mb-6">
-              <img src={settings?.logo2 || "/LOGO2.png"} alt="KOLA Studio" className="h-20 md:h-24 w-auto object-contain" referrerPolicy="no-referrer" />
+              <img src={SETTINGS.logo2} alt="KOLA Studio" className="h-20 md:h-24 w-auto object-contain" referrerPolicy="no-referrer" />
             </div>
             <p className="text-gray-400 max-w-md mb-8">
               Agence de design d'espace dédiée à la création d'environnements qui soignent, soutiennent et inspirent. Porteurs du projet VI WE.
@@ -783,11 +698,11 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={20} className="text-kola-accent flex-shrink-0" />
-                <a href={`mailto:${settings.email}`} className="hover:text-kola-accent transition-colors">{settings.email}</a>
+                <a href={`mailto:${SETTINGS.email}`} className="hover:text-kola-accent transition-colors">{SETTINGS.email}</a>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={20} className="text-kola-accent flex-shrink-0" />
-                <a href={`tel:${settings.phone}`} className="hover:text-kola-accent transition-colors">{settings.phone}</a>
+                <a href={`tel:${SETTINGS.phone}`} className="hover:text-kola-accent transition-colors">{SETTINGS.phone}</a>
               </li>
             </ul>
           </div>
@@ -798,7 +713,6 @@ const Footer = () => {
             © {new Date().getFullYear()} KOLA STUDIO. Tous droits réservés.
           </p>
           <div className="flex gap-6 text-sm text-gray-500">
-            <Link to="/admin" className="hover:text-white transition-colors">A</Link>
             <a href="#" className="hover:text-white transition-colors">Mentions légales</a>
             <a href="#" className="hover:text-white transition-colors">Politique de confidentialité</a>
           </div>
@@ -829,7 +743,6 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<MainApp />} />
-        <Route path="/admin" element={<Admin />} />
       </Routes>
     </BrowserRouter>
   );
